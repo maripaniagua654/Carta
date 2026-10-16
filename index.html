@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Para ti amor 💙</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+  }
+  .sobre {
+    width: 320px;
+    height: 220px;
+    background: #4a90e2;
+    position: relative;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+  }
+  .sobre:hover { transform: scale(1.05); }
+  .solapa {
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 0;
+    border-left: 160px solid transparent;
+    border-right: 160px solid transparent;
+    border-top: 110px solid #2c6fb5;
+    transition: transform 0.6s;
+    transform-origin: top;
+    z-index: 2;
+  }
+  .sobre.abierto .solapa { transform: rotateX(180deg); }
+
+  .carta {
+    position: absolute;
+    top: 20px; left: 20px;
+    width: 280px;
+    padding: 18px;
+    background: #f0f8ff;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: translateY(40px) scale(0.9);
+    opacity: 0;
+    transition: all 0.6s 0.4s;
+    text-align: center;
+    font-size: 15px;
+    color: #2c3e50;
+    z-index: 1;
+    box-sizing: border-box;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .sobre.abierto .carta {
+    /* 👇 ANTES: translateY(-130px) — AHORA más abajo */
+    transform: translateY(-30px) scale(1);
+    opacity: 1;
+    z-index: 3;
+  }
+
+  .carta .emoji {
+    font-size: 22px;
+    margin: 0 0 8px 0;
+  }
+  .carta p { margin: 4px 0; }
+
+  .corazon {
+    position: fixed;
+    top: -50px;
+    font-size: 24px;
+    animation: caer 4s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes caer {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+  .contador {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    color: #fff;
+    font-size: 13px;
+    opacity: 0.8;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="sobre" id="sobre" onclick="siguienteMensaje()">
+  <div class="solapa"></div>
+  <div class="carta" id="carta">
+    <p class="emoji" id="emoji">💌</p>
+    <p id="texto"><strong>Toca el sobre 💙</strong></p>
+  </div>
+</div>
+
+<div class="contador" id="contador"></div>
+
+<script>
+  const mensajes = [
+    {
+      emoji: "🌎",
+      texto: "<strong>Mi amor,</strong><br>Mi lugar favorito no es un sitio, son tus brazos."
+    },
+    {
+      emoji: "👩‍❤️‍👨",
+      texto: "Quiero ser tu abrazo favorito, tu pensamiento bonito y tu personita especial"
+    },
+    {
+      emoji: "💙",
+      texto: "Quiero ser esa personita que te robe sonrisas, te llene de besos y te recuerde todos los días lo mucho que vale tu corazón."
+    },
+    {
+      emoji: "💌",
+      texto: "Si tuviera que elegir de nuevo,<br>te elegiría mil veces más, amor."
+    },
+    {
+      emoji: "💙",
+      texto: "Contigo hasta lo ordinario se vuelve<br>mi recuerdo favorito."
+    },
+    {
+      emoji: "🥰",
+      texto: "Aunque la distancia nos separe, mis ganas de verte, abrazarte y llenarte de besitos no cambian. A veces quisiera aparecer de la nada a tu lado y acurrucarme contigo.💗 Pero cuando por fin te tenga cerquita, prepárate, porque tengo muchos besos pendientes y pocas ganas de soltarte."
+    }
+  ];
+
+  let indice = -1;
+
+  const sobre = document.getElementById('sobre');
+  const carta = document.getElementById('carta');
+  const contadorEl = document.getElementById('contador');
+
+  function renderContenido(msg) {
+    carta.innerHTML = `
+      <p class="emoji">${msg.emoji}</p>
+      <p>${msg.texto}</p>
+    `;
+  }
+
+  function siguienteMensaje() {
+    if (sobre.classList.contains('abierto') && indice === mensajes.length - 1) {
+      sobre.classList.remove('abierto');
+      indice = -1;
+      contadorEl.textContent = '';
+      setTimeout(() => {
+        carta.innerHTML = `
+          <p class="emoji">💌</p>
+          <p><strong> TE AMOOO 💙</strong></p>
+        `;
+      }, 600);
+      return;
+    }
+
+    indice++;
+
+    if (!sobre.classList.contains('abierto')) {
+      sobre.classList.add('abierto');
+    }
+
+    carta.style.transition = 'opacity 0.3s, transform 0.6s 0.4s';
+    carta.style.opacity = '0';
+
+    setTimeout(() => {
+      renderContenido(mensajes[indice]);
+      carta.style.opacity = '1';
+      contadorEl.textContent = `Mensaje ${indice + 1} de ${mensajes.length}`;
+    }, 250);
+  }
+
+  setInterval(() => {
+    const c = document.createElement('div');
+    c.className = 'corazon';
+    c.textContent = ['💙','🩵','💙','🩵','💙'][Math.floor(Math.random()*5)];
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDuration = (3 + Math.random()*3) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }, 400);
+</script>
+
+</body>
+</html>
